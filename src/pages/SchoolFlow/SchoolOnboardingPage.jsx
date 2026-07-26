@@ -275,7 +275,7 @@ const SchoolOnboardingPage = () => {
                             </div>
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 mb-1.5">Account Number*</label>
-                                <input type="text" placeholder="0123456789" maxlength="10" required
+                                <input type="text" placeholder="0123456789" maxLength="10" required
                                     className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-brand focus:ring-2 focus:ring-brand/10 outline-none transition-all text-sm font-bold shadow-sm tracking-widest" />
                             </div>
                             <div className="md:col-span-2">

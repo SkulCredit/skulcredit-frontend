@@ -163,7 +163,7 @@ const ServiceChargePage = () => {
                             <div>
                                 <label className="block text-sm font-bold text-slate-700 mb-1.5">Card Number</label>
                                 <div className="relative">
-                                    <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required
+                                    <input type="text" placeholder="0000 0000 0000 0000" maxLength="19" required
                                         className="card-input w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all text-sm text-slate-800 font-bold placeholder-slate-300" />
                                     {/*  Visa/Mastercard placeholder icon  */}
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1">
@@ -175,12 +175,12 @@ const ServiceChargePage = () => {
                             <div className="grid grid-cols-2 gap-5">
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-1.5">Expiry Date</label>
-                                    <input type="text" placeholder="MM/YY" maxlength="5" required
+                                    <input type="text" placeholder="MM/YY" maxLength="5" required
                                         className="w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all text-sm text-slate-800 font-bold placeholder-slate-300 text-center" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-1.5">CVV</label>
-                                    <input type="password" placeholder="123" maxlength="3" required
+                                    <input type="password" placeholder="123" maxLength="3" required
                                         className="w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all text-sm text-slate-800 font-bold placeholder-slate-300 text-center" />
                                 </div>
                             </div>

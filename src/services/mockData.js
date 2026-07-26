@@ -43,3 +43,8 @@ export const mockParentAccount = {
   nextPaymentAmount: 250000,
   nextPaymentDate: 'Nov 12, 2026'
 };
+
+export const mockParentAccounts = [
+  { id: 'PAR-001', name: 'John Doe', email: 'parent@test.com' },
+  { id: 'par-002', name: 'Jane Smith', email: 'jane@test.com' }
+];
