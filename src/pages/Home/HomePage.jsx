@@ -4,8 +4,37 @@ import { Link, useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 
 const HomePage = () => {
-  const [activeView, setActiveView] = useState('home');
+    const [activeView, setActiveView] = useState('home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeFaq, setActiveFaq] = useState(null);
+  const [waitlistType, setWaitlistType] = useState('parent');
+  const [waitlistStatus, setWaitlistStatus] = useState(null);
+
+  const toggleFaq = (index) => {
+    setActiveFaq(activeFaq === index ? null : index);
+  };
+
+  const handleWaitlistSubmit = async (e) => {
+    e.preventDefault();
+    setWaitlistStatus('loading');
+    const form = e.target;
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (response.ok) {
+        setWaitlistStatus('success');
+        form.reset();
+      } else {
+        setWaitlistStatus('error');
+      }
+    } catch (error) {
+      setWaitlistStatus('error');
+    }
+  };
 
   useEffect(() => {
     if (window.lucide && window.lucide.createIcons) {
@@ -53,7 +82,7 @@ const HomePage = () => {
         <div className="container mx-auto px-4 md:px-6 max-w-7xl">
             <div
                 className="flex items-center justify-between bg-white/20 backdrop-blur-xl border border-white/30 rounded-full px-6 py-3 shadow-glass">
-                <div className="flex items-center gap-2 cursor-pointer interactable" onClick={() => {}}>
+                <div className="flex items-center gap-2 cursor-pointer interactable" onClick={() => toggleFaq(0)}>
                     <img src="logo_nav.png" alt="SkulCredit" className="h-16 w-28 w-auto interactable"
                          />
                 </div>
@@ -1009,17 +1038,17 @@ z-0" style={{'transform': 'translateX(-350px) translateY(40px)'}} />
 
                     <div className="lg:col-span-8 space-y-4">
                         <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 md:p-8 cursor-pointer hover:shadow-lg transition-all duration-300 group reveal-right delay-100 interactable"
-                            onClick={() => {}}>
+                            onClick={() => toggleFaq(1)}>
                             <div className="flex justify-between items-center pointer-events-none">
                                 <h3
                                     className="font-bold text-slate-900 text-lg group-hover:text-rose-900 transition-colors pr-4">
                                     Who can become a SkulCredit Partner School?</h3>
                                 <div
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shadow-sm group-hover:bg-rose-900 group-hover:text-white transform transition-all duration-300 icon-rotate flex-shrink-0">
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-all duration-300 flex-shrink-0 ${activeFaq === 1 ? "bg-rose-900 text-white rotate-180" : "bg-slate-50 text-slate-900 group-hover:bg-rose-900 group-hover:text-white"}`}>
                                     <Icon name="chevron-down" className="w-5 h-5" />
                                 </div>
                             </div>
-                            <div className="max-h-0 overflow-hidden accordion-content opacity-0">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === 1 ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0"}`}>
                                 <p className="pt-6 leading-relaxed text-slate-600 text-md">Any accredited primary,
                                     secondary, or tertiary institution can apply to join our partner network. Your
                                     school must be officially registered and approved by the appropriate education board
@@ -1027,99 +1056,99 @@ z-0" style={{'transform': 'translateX(-350px) translateY(40px)'}} />
                             </div>
                         </div>
                         <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 md:p-8 cursor-pointer hover:shadow-lg transition-all duration-300 group reveal-right delay-200 interactable"
-                            onClick={() => {}}>
+                            onClick={() => toggleFaq(2)}>
                             <div className="flex justify-between items-center pointer-events-none">
                                 <h3
                                     className="font-bold text-slate-900 text-lg group-hover:text-rose-900 transition-colors pr-4">
                                     What information do I need to provide as a parent?</h3>
                                 <div
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shadow-sm group-hover:bg-rose-900 group-hover:text-white transform transition-all duration-300 icon-rotate flex-shrink-0">
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-all duration-300 flex-shrink-0 ${activeFaq === 2 ? "bg-rose-900 text-white rotate-180" : "bg-slate-50 text-slate-900 group-hover:bg-rose-900 group-hover:text-white"}`}>
                                     <Icon name="chevron-down" className="w-5 h-5" />
                                 </div>
                             </div>
-                            <div className="max-h-0 overflow-hidden accordion-content opacity-0">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === 2 ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0"}`}>
                                 <p className="pt-6 leading-relaxed text-slate-600 text-md">You'll need basic identification
                                     (BVN/NIN), proof of employment or stable income, the student's details, and the
                                     school's official fee invoice or admission letter.</p>
                             </div>
                         </div>
                         <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 md:p-8 cursor-pointer hover:shadow-lg transition-all duration-300 group reveal-right delay-300 interactable"
-                            onClick={() => {}}>
+                            onClick={() => toggleFaq(3)}>
                             <div className="flex justify-between items-center pointer-events-none">
                                 <h3
                                     className="font-bold text-slate-900 text-lg group-hover:text-rose-900 transition-colors pr-4">
                                     How long does the approval process take?</h3>
                                 <div
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shadow-sm group-hover:bg-rose-900 group-hover:text-white transform transition-all duration-300 icon-rotate flex-shrink-0">
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-all duration-300 flex-shrink-0 ${activeFaq === 3 ? "bg-rose-900 text-white rotate-180" : "bg-slate-50 text-slate-900 group-hover:bg-rose-900 group-hover:text-white"}`}>
                                     <Icon name="chevron-down" className="w-5 h-5" />
                                 </div>
                             </div>
-                            <div className="max-h-0 overflow-hidden accordion-content opacity-0">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === 3 ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0"}`}>
                                 <p className="pt-6 leading-relaxed text-slate-600 text-md">Our automated system processes
                                     most applications within 15 minutes. Final disbursement to the school's account is
                                     guaranteed within 24 to 48 hours of your acceptance of the loan terms.</p>
                             </div>
                         </div>
                         <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 md:p-8 cursor-pointer hover:shadow-lg transition-all duration-300 group reveal-right delay-400 interactable"
-                            onClick={() => {}}>
+                            onClick={() => toggleFaq(4)}>
                             <div className="flex justify-between items-center pointer-events-none">
                                 <h3
                                     className="font-bold text-slate-900 text-lg group-hover:text-rose-900 transition-colors pr-4">
                                     What is the interest rate?</h3>
                                 <div
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shadow-sm group-hover:bg-rose-900 group-hover:text-white transform transition-all duration-300 icon-rotate flex-shrink-0">
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-all duration-300 flex-shrink-0 ${activeFaq === 4 ? "bg-rose-900 text-white rotate-180" : "bg-slate-50 text-slate-900 group-hover:bg-rose-900 group-hover:text-white"}`}>
                                     <Icon name="chevron-down" className="w-5 h-5" />
                                 </div>
                             </div>
-                            <div className="max-h-0 overflow-hidden accordion-content opacity-0">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === 4 ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0"}`}>
                                 <p className="pt-6 leading-relaxed text-slate-600 text-md">There is no interest rate, but a
                                     service charge as low as 10% one-off payment depending on the tiering system.</p>
                             </div>
                         </div>
                         <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 md:p-8 cursor-pointer hover:shadow-lg transition-all duration-300 group reveal-right delay-500 interactable"
-                            onClick={() => {}}>
+                            onClick={() => toggleFaq(5)}>
                             <div className="flex justify-between items-center pointer-events-none">
                                 <h3
                                     className="font-bold text-slate-900 text-lg group-hover:text-rose-900 transition-colors pr-4">
                                     What is the tiering system?</h3>
                                 <div
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shadow-sm group-hover:bg-rose-900 group-hover:text-white transform transition-all duration-300 icon-rotate flex-shrink-0">
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-all duration-300 flex-shrink-0 ${activeFaq === 5 ? "bg-rose-900 text-white rotate-180" : "bg-slate-50 text-slate-900 group-hover:bg-rose-900 group-hover:text-white"}`}>
                                     <Icon name="chevron-down" className="w-5 h-5" />
                                 </div>
                             </div>
-                            <div className="max-h-0 overflow-hidden accordion-content opacity-0">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === 5 ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0"}`}>
                                 <p className="pt-6 leading-relaxed text-slate-600 text-md">The tiering system is a ranking
                                     placement for schools in order to arrive at the appropriate service charge.</p>
                             </div>
                         </div>
                         <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 md:p-8 cursor-pointer hover:shadow-lg transition-all duration-300 group reveal-right delay-500 interactable"
-                            onClick={() => {}}>
+                            onClick={() => toggleFaq(6)}>
                             <div className="flex justify-between items-center pointer-events-none">
                                 <h3
                                     className="font-bold text-slate-900 text-lg group-hover:text-rose-900 transition-colors pr-4">
                                     What is the Service charge?</h3>
                                 <div
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shadow-sm group-hover:bg-rose-900 group-hover:text-white transform transition-all duration-300 icon-rotate flex-shrink-0">
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-all duration-300 flex-shrink-0 ${activeFaq === 6 ? "bg-rose-900 text-white rotate-180" : "bg-slate-50 text-slate-900 group-hover:bg-rose-900 group-hover:text-white"}`}>
                                     <Icon name="chevron-down" className="w-5 h-5" />
                                 </div>
                             </div>
-                            <div className="max-h-0 overflow-hidden accordion-content opacity-0">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === 6 ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0"}`}>
                                 <p className="pt-6 leading-relaxed text-slate-600 text-md">This is a one-off payment made
                                     upon approval before the tuition fee is disbursed to the schools accordingly.</p>
                             </div>
                         </div>
                         <div className="bg-white border border-slate-200 rounded-[1.5rem] p-6 md:p-8 cursor-pointer hover:shadow-lg transition-all duration-300 group reveal-right delay-500 interactable"
-                            onClick={() => {}}>
+                            onClick={() => toggleFaq(7)}>
                             <div className="flex justify-between items-center pointer-events-none">
                                 <h3
                                     className="font-bold text-slate-900 text-lg group-hover:text-rose-900 transition-colors pr-4">
                                     Can I pay off my loan early?</h3>
                                 <div
-                                    className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-900 shadow-sm group-hover:bg-rose-900 group-hover:text-white transform transition-all duration-300 icon-rotate flex-shrink-0">
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-all duration-300 flex-shrink-0 ${activeFaq === 7 ? "bg-rose-900 text-white rotate-180" : "bg-slate-50 text-slate-900 group-hover:bg-rose-900 group-hover:text-white"}`}>
                                     <Icon name="chevron-down" className="w-5 h-5" />
                                 </div>
                             </div>
-                            <div className="max-h-0 overflow-hidden accordion-content opacity-0">
+                            <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === 7 ? "max-h-[500px] opacity-100 mt-6" : "max-h-0 opacity-0"}`}>
                                 <p className="pt-6 leading-relaxed text-slate-600 text-md">Yes! You can liquidate or pay off
                                     your outstanding balance at any time before the end of your tenure. We do not charge
                                     any early repayment penalties.</p>
@@ -1173,22 +1202,22 @@ z-0" style={{'transform': 'translateX(-350px) translateY(40px)'}} />
                         </div>
 
                         <form action="https://formsubmit.co/hello@getskulcreditng.com" method="POST"
-                            onSubmit={(e) => e.preventDefault()} className="space-y-3 md:space-y-4">
+                            onSubmit={handleWaitlistSubmit} className="space-y-3 md:space-y-4">
 
                             <input type="hidden" name="_subject" value="New Lead - SkulCredit" />
                             <input type="hidden" name="_captcha" value="false" />
                             <input type="hidden" name="_template" value="table" />
 
-                            <input type="hidden" name="User Type" id="userType" value="parent" />
+                            <input type="hidden" name="User Type" id="userType" value={waitlistType} />
 
                             <div className="flex gap-3 mb-2">
-                                <button type="button" onClick={() => {}} id="parentBtn"
-                                    className="px-4 py-2 rounded-lg bg-white text-[#87144B] text-xs md:text-sm font-medium">
+                                <button type="button" onClick={() => setWaitlistType('parent')} id="parentBtn"
+                                    className={`px-4 py-2 rounded-lg text-xs md:text-sm font-medium ${waitlistType === 'parent' ? 'bg-white text-[#87144B]' : 'bg-white/20 text-white'}`}>
                                     Parent
                                 </button>
 
-                                <button type="button" onClick={() => {}} id="schoolBtn"
-                                    className="px-4 py-2 rounded-lg bg-white/20 text-white text-xs md:text-sm font-medium">
+                                <button type="button" onClick={() => setWaitlistType('school')} id="schoolBtn"
+                                    className={`px-4 py-2 rounded-lg text-xs md:text-sm font-medium ${waitlistType === 'school' ? 'bg-white text-[#87144B]' : 'bg-white/20 text-white'}`}>
                                     School
                                 </button>
                             </div>
@@ -1207,15 +1236,17 @@ z-0" style={{'transform': 'translateX(-350px) translateY(40px)'}} />
                             <textarea name="Message" rows="3" placeholder="Message (optional for contact)"
                                 className="w-full px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none"></textarea>
 
-                            <button id="submitBtn" type="submit"
-                                className="w-full bg-white text-[#87144B] py-2 md:py-3 rounded-lg text-sm font-medium hover:scale-[1.02] transition">
-                                Join Waitlist
+                            <button id="submitBtn" type="submit" disabled={waitlistStatus === 'loading'}
+                                className="w-full bg-white text-[#87144B] py-2 md:py-3 rounded-lg text-sm font-medium hover:scale-[1.02] transition disabled:opacity-50">
+                                {waitlistStatus === 'loading' ? 'Submitting...' : 'Join Waitlist'}
                             </button>
 
-                            <p id="successMsg" className="text-green-300 text-xs hidden">
-                                ✅ Submitted successfully!
-                            </p>
-
+                            {waitlistStatus === 'success' && (
+                                <p id="successMsg" className="text-green-300 text-xs">✅ Submitted successfully! We will be in touch.</p>
+                            )}
+                            {waitlistStatus === 'error' && (
+                                <p id="errorMsg" className="text-rose-300 text-xs">❌ An error occurred. Please try again.</p>
+                            )}
                         </form>
 
                     </div>

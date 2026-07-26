@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import { useAuth } from '../../context/AuthContext';
 import Icon from '../../components/Icon';
 
-const AuthPage = () => {
+const ParentAuthPage = () => {
   const [view, setView] = useState('login');
+  const [email, setEmail] = useState('parent@test.com');
+  const [password, setPassword] = useState('parent123');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   useEffect(() => {
     // Attempt to load lucide icons if the script is loaded globally
@@ -38,12 +43,25 @@ const AuthPage = () => {
                 <h2 className="text-xl font-bold text-slate-900 mb-1.5">Login to your Account</h2>
                 <p className="text-sm text-slate-500 font-medium">Welcome back! Please login to your account.</p>
             </div>
-
-            <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); navigate('/parent/eligibility'); }}>
+            <form className="space-y-5" onSubmit={async (e) => { 
+                e.preventDefault();
+                setError('');
+                setIsLoading(true);
+                try {
+                  await login(email, password, 'parent');
+                  navigate('/parent/eligibility');
+                } catch (err) {
+                  setError('Invalid parent credentials. Try parent@test.com / parent123');
+                } finally {
+                  setIsLoading(false);
+                }
+            }}>
+                {error && <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl font-medium">{error}</div>}
+                
                 {/*  Input Group  */}
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Email Address*</label>
-                    <input type="email" placeholder="you@example.com" required
+                    <input type="email" placeholder="you@example.com" required value={email} onChange={(e) => setEmail(e.target.value)}
                         className="w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                 </div>
 
@@ -51,7 +69,7 @@ const AuthPage = () => {
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Password*</label>
                     <div className="relative">
-                        <input type="password" placeholder="At least 6 characters" required
+                        <input type="password" placeholder="At least 6 characters" required value={password} onChange={(e) => setPassword(e.target.value)}
                             className="w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400 pr-12 password-input" />
                         <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand transition-colors">
                             <Icon name="eye-off" className="w-5 h-5" />
@@ -74,10 +92,10 @@ const AuthPage = () => {
                 </div>
 
                 {/*  Submit Button  */}
-                <button type="submit" className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] hover:shadow-[0_15px_25px_-10px_rgba(136,19,55,0.6)] mt-6 overflow-hidden group">
+                <button type="submit" disabled={isLoading} className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] hover:shadow-[0_15px_25px_-10px_rgba(136,19,55,0.6)] mt-6 overflow-hidden group disabled:opacity-70 disabled:hover:translate-y-0">
                     <span className="relative z-10 flex items-center justify-center gap-2">
-                        Sign in
-                        <Icon name="arrow-right" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        {isLoading ? 'Signing In...' : 'Sign in'}
+                        {!isLoading && <Icon name="arrow-right" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                     </span>
                 </button>
 
@@ -203,4 +221,4 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage;
+export default ParentAuthPage;
