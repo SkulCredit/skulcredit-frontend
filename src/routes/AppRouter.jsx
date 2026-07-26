@@ -1,9 +1,12 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
+import ProtectedRoute from '../components/ProtectedRoute';
+
 // Lazy loading pages
 const HomePage = React.lazy(() => import('../pages/Home/HomePage'));
-const AuthPage = React.lazy(() => import('../pages/Auth/AuthPage'));
+const UnifiedAuthPage = React.lazy(() => import('../pages/Auth/UnifiedAuthPage'));
+const ParentAuthPage = React.lazy(() => import('../pages/Auth/ParentAuthPage'));
 
 const EligibilityTestPage = React.lazy(() => import('../pages/ParentFlow/EligibilityTestPage'));
 const StudentDetailsPage = React.lazy(() => import('../pages/ParentFlow/StudentDetailsPage'));
@@ -19,6 +22,10 @@ const SchoolStudentsPage = React.lazy(() => import('../pages/SchoolFlow/SchoolSt
 const SchoolDisbursementPage = React.lazy(() => import('../pages/SchoolFlow/SchoolDisbursementPage'));
 const SchoolVerificationSettingsPage = React.lazy(() => import('../pages/SchoolFlow/SchoolVerificationSettingsPage'));
 
+// Admin pages
+const AdminAuthPage = React.lazy(() => import('../pages/AdminFlow/AdminAuthPage'));
+const AdminDashboardPage = React.lazy(() => import('../pages/AdminFlow/AdminDashboardPage'));
+
 // A basic loading fallback
 const Loader = () => <div className="flex h-screen w-full items-center justify-center">Loading...</div>;
 
@@ -28,21 +35,26 @@ const AppRouter = () => {
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/auth" element={<AuthPage />} />
+          
+          <Route path="/auth" element={<UnifiedAuthPage />} />
+          <Route path="/auth/parent" element={<ParentAuthPage />} />
+          <Route path="/auth/school" element={<SchoolAuthPage />} />
+          <Route path="/auth/admin" element={<AdminAuthPage />} />
           
           <Route path="/parent/eligibility" element={<EligibilityTestPage />} />
           <Route path="/parent/details" element={<StudentDetailsPage />} />
           <Route path="/parent/service-charge" element={<ServiceChargePage />} />
           <Route path="/parent/payment" element={<PaymentConfirmationPage />} />
-          <Route path="/parent/dashboard" element={<ParentDashboardPage />} />
+          <Route path="/parent/dashboard" element={<ProtectedRoute allowedRoles={['parent']}><ParentDashboardPage /></ProtectedRoute>} />
           
-          <Route path="/school/auth" element={<SchoolAuthPage />} />
           <Route path="/school/onboarding" element={<SchoolOnboardingPage />} />
-          <Route path="/school/dashboard" element={<SchoolDashboardPage />} />
-          <Route path="/school/applications" element={<SchoolApplicationsPage />} />
-          <Route path="/school/students" element={<SchoolStudentsPage />} />
-          <Route path="/school/disbursement" element={<SchoolDisbursementPage />} />
-          <Route path="/school/settings" element={<SchoolVerificationSettingsPage />} />
+          <Route path="/school/dashboard" element={<ProtectedRoute allowedRoles={['school']}><SchoolDashboardPage /></ProtectedRoute>} />
+          <Route path="/school/applications" element={<ProtectedRoute allowedRoles={['school']}><SchoolApplicationsPage /></ProtectedRoute>} />
+          <Route path="/school/students" element={<ProtectedRoute allowedRoles={['school']}><SchoolStudentsPage /></ProtectedRoute>} />
+          <Route path="/school/disbursement" element={<ProtectedRoute allowedRoles={['school']}><SchoolDisbursementPage /></ProtectedRoute>} />
+          <Route path="/school/settings" element={<ProtectedRoute allowedRoles={['school']}><SchoolVerificationSettingsPage /></ProtectedRoute>} />
+
+          <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboardPage /></ProtectedRoute>} />
 
           {/* Catch-all for not found */}
           <Route path="*" element={<Navigate to="/" replace />} />
