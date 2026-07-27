@@ -114,7 +114,7 @@ const SchoolAuthPage = () => {
                 <p className="text-sm text-slate-500 font-medium">Join our network to receive fast tuition payments.</p>
             </div>
 
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); navigate('/school/onboarding'); }}>
+            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); navigate('/school/dashboard?status=pending'); }}>
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">School Name*</label>
                     <input type="text" placeholder="Official Institution Name" required
@@ -123,12 +123,12 @@ const SchoolAuthPage = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="group">
-                        <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Admin Name*</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Contact Person*</label>
                         <input type="text" placeholder="Full Name" required
                             className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                     </div>
                     <div className="group">
-                        <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Phone*</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Phone Number*</label>
                         <input type="tel" placeholder="+234..." required
                             className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                     </div>
@@ -138,6 +138,36 @@ const SchoolAuthPage = () => {
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Official Email Address*</label>
                     <input type="email" placeholder="admin@school.edu.ng" required
                         className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
+                </div>
+
+                <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">School Address*</label>
+                    <textarea rows="2" placeholder="Full physical address" required
+                        className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400 resize-none"></textarea>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="group">
+                        <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Website / Social Media*</label>
+                        <input type="text" placeholder="https:// or @handle" required
+                            className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
+                    </div>
+                    <div className="group">
+                        <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">School Population*</label>
+                        <input type="number" placeholder="Estimated students" required min="10"
+                            className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
+                    </div>
+                </div>
+
+                <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">CAC / School Licence Upload*</label>
+                    <label className="upload-zone flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-300 rounded-2xl cursor-pointer hover:bg-slate-100 bg-slate-50 transition-colors">
+                        <div className="flex flex-col items-center text-center px-4">
+                            <Icon name="upload-cloud" className="w-6 h-6 text-brand mb-1" />
+                            <p className="text-xs text-slate-600 font-bold">Click to upload document</p>
+                        </div>
+                        <input type="file" required onChange={() => {}} className="hidden" />
+                    </label>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -165,11 +195,11 @@ const SchoolAuthPage = () => {
 
                 <div className="pt-3 pb-1 text-center text-xs text-slate-500 font-medium leading-relaxed">
                     By registering, you agree to the Partner
-                    <a href="#" className="font-bold text-brand hover:underline">Terms of Service</a>
+                    <a href="#" className="font-bold text-brand hover:underline ml-1">Terms of Service</a>
                 </div>
 
                 <button type="submit" className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] flex items-center justify-center gap-2 group">
-                    <span>Start Onboarding</span>
+                    <span>Submit Application</span>
                     <Icon name="arrow-right" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
 

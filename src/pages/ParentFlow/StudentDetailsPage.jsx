@@ -120,12 +120,31 @@ const StudentDetailsPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="md:col-span-2">
-                            <label className="block text-sm font-bold text-slate-700 mb-1.5">School Name*</label>
-                            <div className="relative">
-                                <Icon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                                <input type="text" id="input-school-name" placeholder="Search for verified school..." required value={formData.schoolName} onChange={e => setFormData({...formData, schoolName: e.target.value})}
-                                    className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all text-sm text-slate-800 placeholder-slate-400" />
+                            <div className="flex justify-between items-center mb-1.5">
+                                <label className="block text-sm font-bold text-slate-700">School Name*</label>
+                                <button type="button" onClick={() => {
+                                    const val = formData.schoolName === 'Manual Entry' ? '' : 'Manual Entry';
+                                    setFormData({...formData, schoolName: val, isManualSchool: val === 'Manual Entry'});
+                                }} className="text-xs font-bold text-brand hover:underline">
+                                    {formData.isManualSchool ? 'Search Verified Schools' : "Can't find your school? Add it"}
+                                </button>
                             </div>
+                            
+                            {!formData.isManualSchool ? (
+                                <div className="relative">
+                                    <Icon name="search" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                                    <input type="text" id="input-school-name" placeholder="Search for verified school..." required value={formData.schoolName} onChange={e => setFormData({...formData, schoolName: e.target.value})}
+                                        className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all text-sm text-slate-800 placeholder-slate-400" />
+                                </div>
+                            ) : (
+                                <div className="space-y-3 p-4 bg-brand/5 border border-brand/20 rounded-2xl">
+                                    <p className="text-xs text-brand font-bold flex items-center gap-2"><Icon name="info" className="w-4 h-4" /> We will follow up to onboard this school</p>
+                                    <input type="text" placeholder="Enter full school name" required value={formData.manualSchoolName || ''} onChange={e => setFormData({...formData, manualSchoolName: e.target.value})}
+                                        className="w-full px-4 py-3.5 rounded-2xl bg-white border border-slate-200 focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all text-sm text-slate-800" />
+                                    <input type="text" placeholder="School Contact Person / Phone (Optional)" value={formData.manualSchoolContact || ''} onChange={e => setFormData({...formData, manualSchoolContact: e.target.value})}
+                                        className="w-full px-4 py-3.5 rounded-2xl bg-white border border-slate-200 focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all text-sm text-slate-800" />
+                                </div>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-bold text-slate-700 mb-1.5">Class / Grade*</label>

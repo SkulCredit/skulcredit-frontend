@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import DataTable from '../../components/DataTable';
 import { useAuth } from '../../context/AuthContext';
@@ -8,17 +8,34 @@ import { mockApplications, mockDisbursements } from '../../services/mockData';
 const SchoolDashboardPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
+  
+  // States: pending, approved, active
+  const [dashboardStatus, setDashboardStatus] = useState('active');
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('status')) {
+      setDashboardStatus(params.get('status'));
+    }
+  }, [location]);
 
   useEffect(() => {
     if (window.lucide && window.lucide.createIcons) {
       window.lucide.createIcons();
     }
-  }, [activeTab]);
+  }, [activeTab, dashboardStatus]);
 
   const handleLogout = () => {
     logout();
     navigate('/auth');
+  };
+
+  const completeRegistration = (e) => {
+    e.preventDefault();
+    setDashboardStatus('active');
+    navigate('/school/dashboard'); // clean url
   };
 
   const appColumns = [
@@ -54,23 +71,40 @@ const SchoolDashboardPage = () => {
 
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
           <button onClick={() => setActiveTab('dashboard')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'dashboard' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
-            <Icon name="layout-dashboard" className={`w-5 h-5 ${activeTab === 'dashboard' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Dashboard
+            <Icon name="layout-dashboard" className={`w-5 h-5 ${activeTab === 'dashboard' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Overview
           </button>
           
-          <button onClick={() => setActiveTab('students')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'students' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
-            <Icon name="users" className={`w-5 h-5 ${activeTab === 'students' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Students
-          </button>
+          {dashboardStatus === 'active' ? (
+            <>
+              <button onClick={() => setActiveTab('students')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'students' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
+                <Icon name="users" className={`w-5 h-5 ${activeTab === 'students' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Students
+              </button>
 
-          <button onClick={() => setActiveTab('applications')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'applications' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
-            <Icon name="file-text" className={`w-5 h-5 ${activeTab === 'applications' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Applications
-          </button>
+              <button onClick={() => setActiveTab('applications')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'applications' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
+                <Icon name="file-text" className={`w-5 h-5 ${activeTab === 'applications' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Applications
+              </button>
 
-          <button onClick={() => setActiveTab('verification')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'verification' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
-            <Icon name="shield-check" className={`w-5 h-5 ${activeTab === 'verification' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Verification
-          </button>
+              <button onClick={() => setActiveTab('verification')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'verification' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
+                <Icon name="shield-check" className={`w-5 h-5 ${activeTab === 'verification' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Verification
+              </button>
 
-          <button onClick={() => setActiveTab('disbursements')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'disbursements' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
-            <Icon name="credit-card" className={`w-5 h-5 ${activeTab === 'disbursements' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Disbursements
+              <button onClick={() => setActiveTab('disbursements')} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group ${activeTab === 'disbursements' ? 'bg-gradient-to-r from-brand to-brand-light text-white shadow-[0_8px_16px_rgba(136,19,55,0.25)]' : 'text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand'}`}>
+                <Icon name="credit-card" className={`w-5 h-5 ${activeTab === 'disbursements' ? '' : 'text-slate-400 group-hover:text-brand transition-colors'}`} /> Disbursements
+              </button>
+            </>
+          ) : (
+            <>
+              <button className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group text-slate-400 opacity-50 cursor-not-allowed`}>
+                <Icon name="users" className="w-5 h-5" /> Students
+              </button>
+              <button className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group text-slate-400 opacity-50 cursor-not-allowed`}>
+                <Icon name="file-text" className="w-5 h-5" /> Applications
+              </button>
+            </>
+          )}
+
+          <button className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all group text-slate-600 hover:bg-white hover:shadow-sm hover:text-brand mt-4`}>
+             <Icon name="headset" className="w-5 h-5 text-slate-400 group-hover:text-brand transition-colors" /> Support
           </button>
         </nav>
 
@@ -107,7 +141,7 @@ const SchoolDashboardPage = () => {
             <button className="flex items-center gap-2 text-slate-600 font-semibold hover:text-brand transition-colors group">
               <div className="relative bg-white/60 backdrop-blur-md p-2.5 rounded-xl border border-white shadow-sm group-hover:bg-white">
                 <Icon name="bell" className="w-5 h-5 group-hover:animate-bounce" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-brand rounded-full border-2 border-white"></span>
+                {dashboardStatus === 'approved' && <span className="absolute top-2 right-2 w-2 h-2 bg-brand rounded-full border-2 border-white"></span>}
               </div>
             </button>
             <button className="flex items-center gap-3 bg-white/60 backdrop-blur-md p-1.5 pr-4 rounded-full border border-white shadow-sm hover:bg-white transition-all">
@@ -123,10 +157,132 @@ const SchoolDashboardPage = () => {
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar px-6 md:px-10 pb-12">
           
-          {activeTab === 'dashboard' && (
+          {/* ================== PENDING DASHBOARD ================== */}
+          {dashboardStatus === 'pending' && activeTab === 'dashboard' && (
+            <div className="max-w-[800px] mx-auto space-y-8 pt-4 animate-fade-in-up">
+              
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm flex items-start gap-4">
+                 <Icon name="clock" className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+                 <div>
+                    <h3 className="font-bold text-amber-900 text-lg mb-1">Your application is currently under review.</h3>
+                    <p className="text-amber-700 text-sm font-medium">Verification usually takes up to 24 hours. We'll notify you once a decision has been made.</p>
+                 </div>
+              </div>
+
+              <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+                <h2 className="text-xl font-extrabold text-slate-900 tracking-tight mb-6">Application Timeline</h2>
+                
+                <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                    <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-brand text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                            <Icon name="check" className="w-4 h-4" />
+                        </div>
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border border-slate-100 bg-slate-50 shadow-sm">
+                            <div className="flex items-center justify-between space-x-2 mb-1">
+                                <div className="font-bold text-slate-900">Application Submitted</div>
+                            </div>
+                            <div className="text-sm text-slate-500">School info and documents received.</div>
+                        </div>
+                    </div>
+                    
+                    <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-amber-500 text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                            <Icon name="loader-2" className="w-4 h-4 animate-spin" />
+                        </div>
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border border-amber-100 bg-white shadow-sm">
+                            <div className="flex items-center justify-between space-x-2 mb-1">
+                                <div className="font-bold text-amber-600">Review Status</div>
+                            </div>
+                            <div className="text-sm text-slate-500">In progress by compliance team.</div>
+                        </div>
+                    </div>
+
+                    <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group opacity-40">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-slate-200 text-slate-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+                            <Icon name="building-2" className="w-4 h-4" />
+                        </div>
+                        <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border border-slate-100 bg-white shadow-sm">
+                            <div className="flex items-center justify-between space-x-2 mb-1">
+                                <div className="font-bold text-slate-700">Decision & Registration</div>
+                            </div>
+                            <div className="text-sm text-slate-500">Pending review outcome.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="mt-12 text-center">
+                   <button onClick={() => setDashboardStatus('approved')} className="text-xs font-bold text-brand border border-brand/20 bg-brand/5 px-4 py-2 rounded-lg hover:bg-brand/10 transition-colors">
+                     [Prototype] Simulate Approval
+                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================== APPROVED DASHBOARD ================== */}
+          {dashboardStatus === 'approved' && activeTab === 'dashboard' && (
+            <div className="max-w-[800px] mx-auto space-y-8 pt-4 animate-fade-in-up">
+              
+              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+                 <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-emerald-500 rounded-full text-white flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20">
+                      <Icon name="party-popper" className="w-6 h-6" />
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-emerald-900 text-xl mb-1">Your school has been approved! 🎉</h3>
+                        <p className="text-emerald-700 text-sm font-medium">Please complete your registration to activate your dashboard.</p>
+                    </div>
+                 </div>
+              </div>
+
+              <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+                <h2 className="text-xl font-extrabold text-slate-900 tracking-tight mb-6 border-b border-slate-100 pb-4">Complete Registration</h2>
+                
+                <form onSubmit={completeRegistration} className="space-y-6">
+                   <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                       <Icon name="building-2" className="w-4 h-4 text-brand" /> Bank Account Details
+                   </h3>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                       <div>
+                           <label className="block text-xs font-bold text-slate-700 mb-1.5">Bank Name*</label>
+                           <input type="text" placeholder="e.g. Zenith Bank" required
+                               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand outline-none transition-all text-sm shadow-sm" />
+                       </div>
+                       <div>
+                           <label className="block text-xs font-bold text-slate-700 mb-1.5">Account Number*</label>
+                           <input type="text" placeholder="0123456789" maxLength="10" required
+                               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand outline-none transition-all text-sm shadow-sm tracking-widest" />
+                       </div>
+                       <div className="md:col-span-2">
+                           <label className="block text-xs font-bold text-slate-700 mb-1.5">Account Name (Must match School Name)*</label>
+                           <input type="text" placeholder="Official Account Name" required
+                               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand outline-none transition-all text-sm shadow-sm" />
+                       </div>
+                   </div>
+
+                   <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 pt-4 border-t border-slate-100">
+                       <Icon name="file-text" className="w-4 h-4 text-brand" /> Additional School Details
+                   </h3>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                       <div className="md:col-span-2">
+                           <label className="block text-xs font-bold text-slate-700 mb-1.5">Primary Contact Person for Finance*</label>
+                           <input type="text" placeholder="Full Name" required
+                               className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand outline-none transition-all text-sm shadow-sm" />
+                       </div>
+                   </div>
+
+                   <button type="submit" className="w-full bg-brand hover:bg-brand-hover text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 mt-4 group">
+                       Complete Setup & Activate Dashboard <Icon name="arrow-right" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                   </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* ================== FULL DASHBOARD ================== */}
+          {dashboardStatus === 'active' && activeTab === 'dashboard' && (
             <div className="max-w-[1200px] mx-auto space-y-8 pt-4 animate-fade-in-up">
               
-              {/* Premium Verification Banner */}
               <div className="relative overflow-hidden rounded-3xl bg-white border border-emerald-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-100/40 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
                 <div className="flex items-start gap-5 relative z-10">
@@ -134,13 +290,10 @@ const SchoolDashboardPage = () => {
                     <Icon name="shield-check" className="w-7 h-7" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-1">Onboarding Complete</h2>
+                    <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-1">Dashboard Activated</h2>
                     <p className="text-slate-500 font-medium">Your institution is verified. You are now ready to process applications and receive direct disbursements.</p>
                   </div>
                 </div>
-                <button className="relative z-10 bg-white border-2 border-slate-100 hover:border-emerald-200 text-slate-700 hover:text-emerald-700 font-bold py-3 px-6 rounded-xl transition-all shadow-sm whitespace-nowrap flex items-center gap-2">
-                  View Profile <Icon name="arrow-right" className="w-4 h-4" />
-                </button>
               </div>
 
               {/* Stats Grid */}
@@ -207,14 +360,15 @@ const SchoolDashboardPage = () => {
             </div>
           )}
 
-          {activeTab === 'applications' && (
+          {/* Other Tabs content rendering logic - only accessible when active */}
+          {dashboardStatus === 'active' && activeTab === 'applications' && (
             <div className="max-w-[1200px] mx-auto space-y-6 pt-4 animate-fade-in-up">
               <h2 className="text-2xl font-extrabold text-slate-900 mb-4">Student Applications</h2>
               <DataTable columns={appColumns} data={mockApplications} searchPlaceholder="Search applications by ID or Student Name..." />
             </div>
           )}
 
-          {activeTab === 'students' && (
+          {dashboardStatus === 'active' && activeTab === 'students' && (
             <div className="max-w-[1200px] mx-auto space-y-6 pt-4 animate-fade-in-up">
               <h2 className="text-2xl font-extrabold text-slate-900 mb-4">Students Directory</h2>
               <div className="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white text-center shadow-sm">
@@ -225,7 +379,7 @@ const SchoolDashboardPage = () => {
             </div>
           )}
 
-          {activeTab === 'verification' && (
+          {dashboardStatus === 'active' && activeTab === 'verification' && (
              <div className="max-w-[1200px] mx-auto space-y-6 pt-4 animate-fade-in-up">
              <h2 className="text-2xl font-extrabold text-slate-900 mb-4">Verification</h2>
              <div className="bg-white/60 backdrop-blur-md p-10 rounded-3xl border border-white text-center shadow-sm">
@@ -236,7 +390,7 @@ const SchoolDashboardPage = () => {
            </div>
           )}
 
-          {activeTab === 'disbursements' && (
+          {dashboardStatus === 'active' && activeTab === 'disbursements' && (
             <div className="max-w-[1200px] mx-auto space-y-6 pt-4 animate-fade-in-up">
               <h2 className="text-2xl font-extrabold text-slate-900 mb-4">Disbursements</h2>
               <DataTable columns={[

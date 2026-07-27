@@ -131,7 +131,7 @@ const ParentDashboardPage = () => {
                 <div className="relative z-10 w-full md:w-auto">
                   <Link to="/parent/eligibility">
                     <button className="w-full md:w-auto bg-white text-brand hover:bg-slate-50 font-bold py-4 px-8 rounded-2xl transition-all shadow-[0_10px_20px_-10px_rgba(255,255,255,0.3)] hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
-                      Apply for School Fee Financing
+                      Start Loan Application
                       <Icon name="arrow-right" className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </Link>
@@ -187,10 +187,17 @@ const ParentDashboardPage = () => {
                     <div className="absolute left-6 top-8 h-1/2 w-0.5 bg-brand"></div>
                     <div className="space-y-8 relative">
                       <div className="flex gap-6 group">
-                        <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_4px_white]"><Icon name="check" className="w-5 h-5" /></div>
+                        <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_4px_white]"><Icon name="check" className="w-5 h-5" /></div>
                         <div className="pt-3">
-                          <h4 className="text-slate-900 font-bold">Student Details Submitted</h4>
-                          <p className="text-sm text-slate-500 mt-1">Application sent for initial review.</p>
+                          <h4 className="text-slate-900 font-bold">KYC Submitted & Approved</h4>
+                          <p className="text-sm text-slate-500 mt-1">Identity verification successfully completed.</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-6 group">
+                        <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_4px_white]"><Icon name="check" className="w-5 h-5" /></div>
+                        <div className="pt-3">
+                          <h4 className="text-slate-900 font-bold">Credit Assessment Passed</h4>
+                          <p className="text-sm text-slate-500 mt-1">You are eligible for the requested loan amount.</p>
                         </div>
                       </div>
                       <div className="flex gap-6 group">
@@ -198,16 +205,23 @@ const ParentDashboardPage = () => {
                           <div className="w-3 h-3 bg-brand rounded-full animate-pulse"></div>
                         </div>
                         <div className="pt-3">
-                          <h4 className="text-brand font-bold">School Verification</h4>
-                          <p className="text-sm text-slate-500 mt-1">Awaiting confirmation from school administration.</p>
+                          <h4 className="text-brand font-bold">School Approval Pending</h4>
+                          <p className="text-sm text-slate-500 mt-1">Waiting for the school to verify the student.</p>
                           <span className="inline-block mt-3 px-3 py-1 bg-amber-50 text-amber-700 text-xs font-bold rounded-lg border border-amber-200">Pending Review</span>
                         </div>
                       </div>
-                      <div className="flex gap-6 group opacity-50">
-                        <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_4px_white]"><Icon name="file-text" className="w-5 h-5" /></div>
+                      <div className="flex gap-6 group opacity-40">
+                        <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_4px_white]"><Icon name="credit-card" className="w-5 h-5" /></div>
                         <div className="pt-3">
-                          <h4 className="text-slate-500 font-bold">Final Approval & Disbursement</h4>
-                          <p className="text-sm text-slate-400 mt-1">Funds will be sent directly to the school.</p>
+                          <h4 className="text-slate-500 font-bold">Service Fee & Repayment Setup</h4>
+                          <p className="text-sm text-slate-400 mt-1">Pay the fee and set up auto-debit.</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-6 group opacity-40">
+                        <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_4px_white]"><Icon name="send" className="w-5 h-5" /></div>
+                        <div className="pt-3">
+                          <h4 className="text-slate-500 font-bold">Loan Disbursed & Active</h4>
+                          <p className="text-sm text-slate-400 mt-1">Funds disbursed to school. Repayments start soon.</p>
                         </div>
                       </div>
                     </div>

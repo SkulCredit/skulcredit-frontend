@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import Icon from '../../components/Icon';
 
 const ParentAuthPage = () => {
-  const [view, setView] = useState('login');
+  const [view, setView] = useState('login'); // views: login, signup, forgot, email-verify, phone-verify, profile-complete
   const [email, setEmail] = useState('parent@test.com');
   const [password, setPassword] = useState('parent123');
   const [error, setError] = useState('');
@@ -118,7 +118,7 @@ const ParentAuthPage = () => {
                 <p className="text-sm text-slate-500 font-medium">Start your journey to affordable education</p>
             </div>
 
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setView('login'); }}>
+            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setView('email-verify'); }}>
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Full Name*</label>
                     <input type="text" placeholder="John Doe" required
@@ -179,6 +179,92 @@ const ParentAuthPage = () => {
             </form>
         </div>
         )}
+
+        {/*  ================= EMAIL VERIFICATION VIEW =================  */}
+        {view === 'email-verify' && (
+        <div id="view-email-verify" className="block animate-fade-in-up py-6">
+            <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-blue-100">
+                    <Icon name="mail" className="w-8 h-8" />
+                </div>
+                <h1 className="text-2xl font-extrabold text-slate-900 mb-3">Email Verified</h1>
+                <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-[90%] mx-auto">
+                    We've sent a 6-digit verification code to your email. Enter it below to verify your email address.
+                </p>
+            </div>
+            <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setView('phone-verify'); }}>
+                <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5 text-center">Enter 6-digit Code</label>
+                    <input type="text" placeholder="------" required maxLength="6"
+                        className="w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-2xl tracking-[0.5em] text-center text-slate-800 font-bold" />
+                </div>
+                <button type="submit" className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] group">
+                    <span className="relative z-10 flex items-center justify-center gap-2">Verify Email</span>
+                </button>
+            </form>
+        </div>
+        )}
+
+        {/*  ================= PHONE VERIFICATION VIEW =================  */}
+        {view === 'phone-verify' && (
+        <div id="view-phone-verify" className="block animate-fade-in-up py-6">
+            <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-emerald-100">
+                    <Icon name="smartphone" className="w-8 h-8" />
+                </div>
+                <h1 className="text-2xl font-extrabold text-slate-900 mb-3">Phone Verified</h1>
+                <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-[90%] mx-auto">
+                    We've sent an OTP to your phone number for added security.
+                </p>
+            </div>
+            <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setView('profile-complete'); }}>
+                <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5 text-center">Enter OTP</label>
+                    <input type="text" placeholder="------" required maxLength="6"
+                        className="w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-2xl tracking-[0.5em] text-center text-slate-800 font-bold" />
+                </div>
+                <button type="submit" className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] group">
+                    <span className="relative z-10 flex items-center justify-center gap-2">Verify Phone</span>
+                </button>
+            </form>
+        </div>
+        )}
+
+        {/*  ================= PROFILE COMPLETION VIEW =================  */}
+        {view === 'profile-complete' && (
+        <div id="view-profile-complete" className="block animate-fade-in-up py-6">
+            <div className="text-center mb-8">
+                <h1 className="text-2xl font-extrabold text-slate-900 mb-3">Profile Completed</h1>
+                <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-[90%] mx-auto">
+                    Tell us a bit more about yourself to personalize your experience.
+                </p>
+            </div>
+            <form className="space-y-4" onSubmit={async (e) => { 
+                e.preventDefault(); 
+                try {
+                  await login('parent@test.com', 'parent123', 'parent');
+                  navigate('/parent/dashboard');
+                } catch (err) {
+                  navigate('/parent/dashboard');
+                }
+            }}>
+                <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Home Address*</label>
+                    <input type="text" placeholder="123 Main St" required
+                        className="w-full px-4 py-3 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand outline-none transition-all text-sm" />
+                </div>
+                <div className="group">
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Occupation*</label>
+                    <input type="text" placeholder="E.g., Engineer" required
+                        className="w-full px-4 py-3 rounded-2xl bg-slate-50/50 border border-slate-200 focus:bg-white focus:border-brand outline-none transition-all text-sm" />
+                </div>
+                <button type="submit" className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] mt-4 group">
+                    <span className="relative z-10 flex items-center justify-center gap-2">Complete Setup & Go to Dashboard <Icon name="arrow-right" className="w-4 h-4" /></span>
+                </button>
+            </form>
+        </div>
+        )}
+
 
         {/*  ================= FORGOT PASSWORD VIEW =================  */}
         {view === 'forgot' && (

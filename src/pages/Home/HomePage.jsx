@@ -1222,19 +1222,57 @@ z-0" style={{'transform': 'translateX(-350px) translateY(40px)'}} />
                                 </button>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <input name="First Name" type="text" placeholder="First name" required
-                                    className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                            {waitlistType === 'parent' ? (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <input name="First Name" type="text" placeholder="First name" required
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
 
-                                <input name="Last Name" type="text" placeholder="Last name" required
-                                    className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
-                            </div>
+                                        <input name="Last Name" type="text" placeholder="Last name" required
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                    </div>
 
-                            <input name="Email" type="email" placeholder="Email address" required
-                                className="w-full px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                    <input name="Email" type="email" placeholder="Email address" required
+                                        className="w-full px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
 
-                            <textarea name="Message" rows="3" placeholder="Message (optional for contact)"
-                                className="w-full px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none"></textarea>
+                                    <textarea name="Message" rows="3" placeholder="Message (optional for contact)"
+                                        className="w-full px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none"></textarea>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <input name="School Name" type="text" placeholder="School Name" required
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                        <input name="Contact Person" type="text" placeholder="Contact Person" required
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <input name="Email" type="email" placeholder="Official Email" required
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                        <input name="Phone Number" type="tel" placeholder="Phone Number" required
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                    </div>
+
+                                    <textarea name="School Address" rows="2" placeholder="Full physical address" required
+                                        className="w-full px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none resize-none"></textarea>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <input name="Website / Social Media" type="text" placeholder="Website or Social Media" required
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                        <input name="School Population" type="number" placeholder="School Population" required min="10"
+                                            className="px-3 py-2 md:py-3 text-sm rounded-lg bg-white/20 text-white placeholder-white/60 focus:outline-none" />
+                                    </div>
+                                    
+                                    <label className="flex flex-col items-center justify-center w-full p-4 border-2 border-dashed border-white/30 rounded-lg cursor-pointer hover:bg-white/10 transition-colors bg-white/5">
+                                        <div className="flex flex-col items-center text-center">
+                                            <Icon name="upload-cloud" className="w-5 h-5 text-white mb-1 opacity-80" />
+                                            <p className="text-xs text-white/80 font-medium">Upload CAC / School Licence</p>
+                                        </div>
+                                        <input name="CAC Document" type="file" required className="hidden" />
+                                    </label>
+                                </>
+                            )}
 
                             <button id="submitBtn" type="submit" disabled={waitlistStatus === 'loading'}
                                 className="w-full bg-white text-[#87144B] py-2 md:py-3 rounded-lg text-sm font-medium hover:scale-[1.02] transition disabled:opacity-50">

@@ -62,7 +62,7 @@ const EligibilityTestPage = () => {
             <div id="progress-header" className="px-8 pt-8 pb-6 border-b border-slate-100 bg-white/50">
                 <div className="flex items-center justify-between mb-4">
                     <div>
-                        <h2 className="text-xl font-extrabold text-slate-900">Eligibility & Verification</h2>
+                        <h2 className="text-xl font-extrabold text-slate-900">Loan Application & KYC</h2>
                         <p className="text-sm text-slate-500 font-medium mt-1">Step <span id="current-step-text">{step}</span> of 3</p>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ const EligibilityTestPage = () => {
                 {/*  ================= STEP 1: Identity (BVN/NIN) =================  */}
                 {step === 1 && (
                 <div id="step-1" className="step-content block animate-slide-in">
-                    <h3 className="text-lg font-bold text-slate-800 mb-6">Identity Verification</h3>
+                    <h3 className="text-lg font-bold text-slate-800 mb-6">KYC Submission (Identity)</h3>
                     <div className="space-y-5">
                         <div>
                             <label className="block text-sm font-bold text-slate-700 mb-1.5">Bank Verification Number (BVN)*</label>
@@ -108,7 +108,7 @@ const EligibilityTestPage = () => {
                 {/*  ================= STEP 2: Document Uploads (ID + Statement) =================  */}
                 {step === 2 && (
                 <div id="step-2" className="step-content animate-slide-in">
-                    <h3 className="text-lg font-bold text-slate-800 mb-6">Verification Documents</h3>
+                    <h3 className="text-lg font-bold text-slate-800 mb-6">KYC Submission (Documents)</h3>
                     <div className="space-y-6">
                         {/*  Parent ID  */}
                         <div>
@@ -148,7 +148,7 @@ const EligibilityTestPage = () => {
                 {/*  ================= STEP 3: Financials =================  */}
                 {step === 3 && (
                 <div id="step-3" className="step-content animate-slide-in">
-                    <h3 className="text-lg font-bold text-slate-800 mb-6">Financial Summary</h3>
+                    <h3 className="text-lg font-bold text-slate-800 mb-6">Credit Assessment Details</h3>
                     <div className="space-y-6">
                         <div>
                             <label className="block text-sm font-bold text-slate-700 mb-1.5">Average Monthly Income (₦)</label>
@@ -175,7 +175,7 @@ const EligibilityTestPage = () => {
                         <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
                         <div className="absolute inset-0 rounded-full border-4 border-brand border-t-transparent animate-spin"></div>
                     </div>
-                    <h3 className="text-xl font-extrabold text-slate-900 mb-2">Analyzing Verification Data...</h3>
+                    <h3 className="text-xl font-extrabold text-slate-900 mb-2">Processing KYC & Assessment...</h3>
                     <p className="text-slate-500 text-sm">Validating BVN/NIN and assessing credit limits.</p>
                 </div>
                 )}
@@ -187,7 +187,7 @@ const EligibilityTestPage = () => {
                         <div className="w-16 h-16 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-5">
                             <Icon name="check" className="w-8 h-8 stroke-[3]" />
                         </div>
-                        <h3 className="text-2xl font-extrabold text-slate-900 mb-2">Verification Successful!</h3>
+                        <h3 className="text-2xl font-extrabold text-slate-900 mb-2">KYC & Credit Assessment Passed!</h3>
                         <div className="bg-white rounded-2xl p-6 shadow-sm mb-8 text-left">
                             <p className="text-xs text-slate-400 font-bold uppercase mb-1">Pre-approved Limit</p>
                             <h4 className="text-3xl font-black text-brand">₦2,500,000</h4>

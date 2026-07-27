@@ -134,12 +134,23 @@ const PaymentConfirmationPage = () => {
                                     <Icon name="check" className="w-6 h-6 stroke-[3]" />
                                 </div>
                                 <div className="pt-2">
-                                    <h4 className="text-slate-900 font-bold text-lg">Service Charge Confirmed</h4>
+                                    <h4 className="text-slate-900 font-bold text-lg">Service Fee Paid</h4>
                                     <p className="text-sm text-slate-500 mt-1">Payment of ₦142,000 received successfully.</p>
                                 </div>
                             </div>
 
-                            {/*  Step 2: Active (Processing)  */}
+                            {/*  Step 2: Complete  */}
+                            <div className="flex gap-6 group">
+                                <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_6px_white]">
+                                    <Icon name="check" className="w-6 h-6 stroke-[3]" />
+                                </div>
+                                <div className="pt-2">
+                                    <h4 className="text-slate-900 font-bold text-lg">Repayment Setup Completed</h4>
+                                    <p className="text-sm text-slate-500 mt-1">Auto-debit mandate setup successful.</p>
+                                </div>
+                            </div>
+
+                            {/*  Step 3: Active (Processing)  */}
                             <div className="flex gap-6 group" id="disburse-step-2">
                                 <div id="disburse-icon-2" className={`w-12 h-12 rounded-full border-2 bg-white flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_6px_white] transition-colors duration-500 ${processing ? 'border-blue-500 text-blue-500' : 'border-emerald-500 text-emerald-500'}`}>
                                     {processing ? (
@@ -149,19 +160,38 @@ const PaymentConfirmationPage = () => {
                                     )}
                                 </div>
                                 <div className="pt-2">
-                                    <h4 id="disburse-title-2" className={`font-bold text-lg transition-colors ${processing ? 'text-blue-600' : 'text-slate-900'}`}>{processing ? 'Processing Bank Transfer' : 'Transfer Processed'}</h4>
-                                    <p id="disburse-desc-2" className="text-sm text-slate-500 mt-1">Connecting to gateway to send ₦710,000 to Foster Prime Schools.</p>
+                                    <h4 id="disburse-title-2" className={`font-bold text-lg transition-colors ${processing ? 'text-blue-600' : 'text-slate-900'}`}>{processing ? 'Processing Loan Disbursement' : 'Loan Disbursed'}</h4>
+                                    <p id="disburse-desc-2" className="text-sm text-slate-500 mt-1">Sending ₦710,000 to Foster Prime Schools.</p>
                                 </div>
                             </div>
 
-                            {/*  Step 3: Pending (Success state)  */}
-                            <div className={`flex gap-6 group transition-opacity duration-500 ${processing ? 'opacity-40' : 'opacity-100'}`} id="disburse-step-3">
-                                <div id="disburse-icon-3" className={`w-12 h-12 rounded-full border-2 bg-white flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_6px_white] ${processing ? 'border-slate-200 text-slate-400' : 'border-emerald-500 text-emerald-500'}`}>
-                                    <Icon name="building-2" className="w-5 h-5" />
+                            {/*  Future Steps  */}
+                            <div className={`flex gap-6 group transition-opacity duration-500 opacity-40`} id="disburse-step-3">
+                                <div id="disburse-icon-3" className={`w-12 h-12 rounded-full border-2 bg-white border-slate-200 text-slate-400 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_6px_white]`}>
+                                    <Icon name="calendar" className="w-5 h-5" />
                                 </div>
                                 <div className="pt-2">
-                                    <h4 id="disburse-title-3" className={`font-bold text-lg ${processing ? 'text-slate-700' : 'text-slate-900'}`}>Funds Disbursed to School</h4>
-                                    <p id="disburse-desc-3" className="text-sm text-slate-500 mt-1">School account credited successfully.</p>
+                                    <h4 id="disburse-title-3" className={`font-bold text-lg text-slate-700`}>First Repayment Made</h4>
+                                    <p id="disburse-desc-3" className="text-sm text-slate-500 mt-1">Upcoming.</p>
+                                </div>
+                            </div>
+
+                            <div className={`flex gap-6 group transition-opacity duration-500 opacity-40`} id="disburse-step-4">
+                                <div className={`w-12 h-12 rounded-full border-2 bg-white border-slate-200 text-slate-400 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_6px_white]`}>
+                                    <Icon name="check-circle-2" className="w-5 h-5" />
+                                </div>
+                                <div className="pt-2">
+                                    <h4 className={`font-bold text-lg text-slate-700`}>Loan Closed</h4>
+                                    <p className="text-sm text-slate-500 mt-1">Fully paid off.</p>
+                                </div>
+                            </div>
+
+                            <div className={`flex gap-6 group transition-opacity duration-500 opacity-40`} id="disburse-step-5">
+                                <div className={`w-12 h-12 rounded-full border-2 bg-white border-slate-200 text-slate-400 flex items-center justify-center flex-shrink-0 relative z-10 shadow-[0_0_0_6px_white]`}>
+                                    <Icon name="party-popper" className="w-5 h-5" />
+                                </div>
+                                <div className="pt-2">
+                                    <h4 className={`font-bold text-lg text-slate-700`}>Eligible to Reapply</h4>
                                 </div>
                             </div>
                         </div>
