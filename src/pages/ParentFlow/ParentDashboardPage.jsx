@@ -3,16 +3,32 @@ import { Link, useNavigate } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import DataTable from '../../components/DataTable';
 import { useAuth } from '../../context/AuthContext';
-import { mockApplications, mockParentAccounts } from '../../services/mockData';
+import { dashboardService } from '../../services/dashboardService';
 
 const ParentDashboardPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [dashboardData, setDashboardData] = useState({ profile: {}, applications: [], students: [] });
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
-  // Find parent data (fallback if not found)
-  const parentData = mockParentAccounts.find(p => p.id === 'PAR-001') || mockParentAccounts[0];
-  const myApplications = mockApplications.filter(app => app.parentName === parentData.name);
+  // Real user data from context/API
+  const userName = user?.name || user?.firstName || 'Parent';
+  const myApplications = dashboardData.applications || [];
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const data = await dashboardService.getParentDashboard();
+        setDashboardData(data);
+      } catch (err) {
+        console.error("Failed to fetch dashboard:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
 
   useEffect(() => {
     if (window.lucide && window.lucide.createIcons) {
@@ -75,7 +91,7 @@ const ParentDashboardPage = () => {
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold">PT</div>
               <div>
-                <p className="text-sm font-bold text-slate-900 line-clamp-1">{parentData.name}</p>
+                <p className="text-sm font-bold text-slate-900 line-clamp-1">{userName}</p>
                 <p className="text-xs text-slate-500 line-clamp-1">Parent Account</p>
               </div>
             </div>
@@ -118,23 +134,29 @@ const ParentDashboardPage = () => {
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-10 relative">
           
-          {activeTab === 'dashboard' && (
+          {activeTab === 'dashboard' && isLoading && (
+            <div className="flex h-full items-center justify-center">
+               <div className="w-10 h-10 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+
+          {activeTab === 'dashboard' && !isLoading && (
             <div className="max-w-6xl mx-auto space-y-8 animate-fade-in-up">
               
               {/* Welcome Banner */}
               <div className="bg-brand rounded-3xl p-8 md:p-10 text-white relative overflow-hidden shadow-lg shadow-brand/10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
                 <div className="relative z-10 space-y-2">
-                  <h2 className="text-2xl md:text-4xl font-extrabold">Welcome back, {parentData.name.split(' ')[0]} 👋</h2>
+                  <h2 className="text-2xl md:text-4xl font-extrabold">Welcome back, {userName.split(' ')[0]} 👋</h2>
                   <p className="text-brand-50/80 font-medium max-w-md text-sm md:text-base">Ensure your child's education never pauses. Fast, secure, and flexible fee financing.</p>
                 </div>
                 <div className="relative z-10 w-full md:w-auto">
-                  <Link to="/parent/eligibility">
-                    <button className="w-full md:w-auto bg-white text-brand hover:bg-slate-50 font-bold py-4 px-8 rounded-2xl transition-all shadow-[0_10px_20px_-10px_rgba(255,255,255,0.3)] hover:-translate-y-0.5 flex items-center justify-center gap-2 group">
+                  <div className="relative group/btn">
+                    <button onClick={() => navigate('/parent/eligibility')} className="w-full md:w-auto bg-white/95 hover:bg-white text-brand font-bold py-4 px-8 rounded-2xl transition-all flex items-center justify-center gap-3 border border-white/20 shadow-md hover:shadow-lg hover:-translate-y-0.5">
                       Start Loan Application
-                      <Icon name="arrow-right" className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      <span className="px-2 py-0.5 bg-brand-light text-white text-[10px] uppercase tracking-wider rounded-md font-extrabold shadow-sm group-hover/btn:bg-brand transition-colors">Apply Now</span>
                     </button>
-                  </Link>
+                  </div>
                 </div>
               </div>
 
@@ -168,8 +190,8 @@ const ParentDashboardPage = () => {
                     <div className="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center"><Icon name="calendar" className="w-5 h-5" /></div>
                   </div>
                   <h4 className="text-slate-500 text-sm font-medium mb-1">Next Installment</h4>
-                  <p className="text-2xl font-extrabold text-slate-900">Nov 15</p>
-                  <p className="text-xs text-slate-400 mt-2 font-medium">₦83,333 Due</p>
+                  <p className="text-2xl font-extrabold text-slate-900">-</p>
+                  <p className="text-xs text-slate-400 mt-2 font-medium">No active schedule</p>
                 </div>
               </div>
 
@@ -179,9 +201,14 @@ const ParentDashboardPage = () => {
                   <div className="flex items-center justify-between mb-8">
                     <div>
                       <h3 className="text-lg font-bold text-slate-900">Current Application Progress</h3>
-                      <p className="text-sm text-slate-500 font-medium mt-1">Application ID: {myApplications[0]?.id}</p>
+                      <p className="text-sm text-slate-500 font-medium mt-1">Application ID: {myApplications.length > 0 ? myApplications[0]?.id : 'None'}</p>
                     </div>
                   </div>
+                  {myApplications.length === 0 ? (
+                    <div className="text-center py-12 text-slate-500">
+                      You have no active loan applications.
+                    </div>
+                  ) : (
                   <div className="relative">
                     <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-slate-100"></div>
                     <div className="absolute left-6 top-8 h-1/2 w-0.5 bg-brand"></div>
@@ -224,20 +251,25 @@ const ParentDashboardPage = () => {
                           <p className="text-sm text-slate-400 mt-1">Funds disbursed to school. Repayments start soon.</p>
                         </div>
                       </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
                 <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
                   <h3 className="text-lg font-bold text-slate-900 mb-6">Recent Activity</h3>
                   <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0"><Icon name="check" className="w-5 h-5" /></div>
-                      <div>
-                        <p className="text-sm font-bold text-slate-900">Identity Verified</p>
-                        <p className="text-xs text-slate-500 mt-1">KYC completed successfully</p>
-                        <p className="text-xs text-slate-400 mt-2 font-medium">2 days ago</p>
+                    {myApplications.length === 0 ? (
+                      <div className="text-sm text-slate-500">No recent activity to show.</div>
+                    ) : (
+                      <div className="flex gap-4">
+                        <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0"><Icon name="check" className="w-5 h-5" /></div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">Application Submitted</p>
+                          <p className="text-xs text-slate-500 mt-1">Awaiting review</p>
+                          <p className="text-xs text-slate-400 mt-2 font-medium">Just now</p>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -269,8 +301,8 @@ const ParentDashboardPage = () => {
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600"><Icon name="shield-check" className="w-6 h-6" /></div>
                   <div>
-                    <h3 className="text-emerald-800 font-bold text-lg">Identity Verified</h3>
-                    <p className="text-emerald-600/80 text-sm mt-1">Your KYC documents have been reviewed and approved.</p>
+                    <h3 className="text-emerald-800 font-bold text-lg">Identity Verification pending</h3>
+                    <p className="text-emerald-600/80 text-sm mt-1">Please submit your KYC documents to be verified.</p>
                   </div>
                 </div>
               </div>

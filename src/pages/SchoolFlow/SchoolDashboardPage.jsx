@@ -3,16 +3,36 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Icon from '../../components/Icon';
 import DataTable from '../../components/DataTable';
 import { useAuth } from '../../context/AuthContext';
-import { mockApplications, mockDisbursements } from '../../services/mockData';
+import { dashboardService } from '../../services/dashboardService';
 
 const SchoolDashboardPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [dashboardData, setDashboardData] = useState({ school: {}, applications: [], students: [], disbursements: [] });
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   
+  const myApplications = dashboardData.applications || [];
+  const myDisbursements = dashboardData.disbursements || [];
+  const totalStudents = dashboardData.students?.length || 0;
+
   // States: pending, approved, active
   const [dashboardStatus, setDashboardStatus] = useState('active');
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const data = await dashboardService.getSchoolDashboard();
+        setDashboardData(data);
+      } catch (err) {
+        console.error("Failed to fetch dashboard:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -280,7 +300,13 @@ const SchoolDashboardPage = () => {
           )}
 
           {/* ================== FULL DASHBOARD ================== */}
-          {dashboardStatus === 'active' && activeTab === 'dashboard' && (
+          {dashboardStatus === 'active' && activeTab === 'dashboard' && isLoading && (
+             <div className="flex h-64 items-center justify-center">
+                 <div className="w-10 h-10 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
+             </div>
+          )}
+
+          {dashboardStatus === 'active' && activeTab === 'dashboard' && !isLoading && (
             <div className="max-w-[1200px] mx-auto space-y-8 pt-4 animate-fade-in-up">
               
               <div className="relative overflow-hidden rounded-3xl bg-white border border-emerald-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -301,25 +327,24 @@ const SchoolDashboardPage = () => {
                 <div className="glass-card rounded-[2rem] bg-white/40 p-6 relative overflow-hidden group cursor-pointer border border-white">
                   <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-brand shadow-sm border border-brand/10 mb-4 group-hover:scale-110 transition-transform duration-300"><Icon name="users" className="w-6 h-6" /></div>
                   <p className="text-sm font-bold text-slate-500 mb-1">Total Students</p>
-                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">140</h3>
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{totalStudents}</h3>
                 </div>
                 <div className="glass-card rounded-[2rem] bg-white/40 p-6 relative overflow-hidden group cursor-pointer border border-white">
                   <div className="flex justify-between items-start mb-4">
                     <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-amber-500 shadow-sm border border-amber-500/10 group-hover:scale-110 transition-transform duration-300"><Icon name="file-clock" className="w-6 h-6" /></div>
-                    <span className="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-1 rounded-lg animate-pulse">Action Needed</span>
                   </div>
                   <p className="text-sm font-bold text-slate-500 mb-1">New Applications</p>
-                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{mockApplications.filter(a => a.status === 'pending_school_approval').length}</h3>
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{myApplications.filter(a => a.status === 'pending_school_approval').length}</h3>
                 </div>
                 <div className="glass-card rounded-[2rem] bg-white/40 p-6 relative overflow-hidden group cursor-pointer border border-white">
                   <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-blue-500 shadow-sm border border-blue-500/10 mb-4 group-hover:scale-110 transition-transform duration-300"><Icon name="file-check-2" className="w-6 h-6" /></div>
                   <p className="text-sm font-bold text-slate-500 mb-1">Verified Apps</p>
-                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">86</h3>
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tight">{myApplications.filter(a => a.status === 'disbursed').length}</h3>
                 </div>
                 <div className="glass-card rounded-[2rem] bg-white/40 p-6 relative overflow-hidden group cursor-pointer border border-white">
                   <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-500 shadow-sm border border-emerald-500/10 mb-4 group-hover:scale-110 transition-transform duration-300"><Icon name="badge-dollar-sign" className="w-6 h-6" /></div>
                   <p className="text-sm font-bold text-slate-500 mb-1">Disbursed Funds</p>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight">₦{mockDisbursements.reduce((acc, d) => acc + d.amount, 0).toLocaleString()}</h3>
+                  <h3 className="text-2xl font-black text-slate-900 tracking-tight">₦{myDisbursements.reduce((acc, d) => acc + d.amount, 0).toLocaleString()}</h3>
                 </div>
               </div>
 
@@ -352,7 +377,7 @@ const SchoolDashboardPage = () => {
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur-sm group-hover:scale-110 transition-transform"><Icon name="arrow-right" className="w-5 h-5" /></div>
                     <div>
                       <h4 className="font-bold text-white text-sm">Review Applications</h4>
-                      <p className="text-xs text-brand-50 font-medium">{mockApplications.length} requests</p>
+                      <p className="text-xs text-brand-50 font-medium">{myApplications.length} requests</p>
                     </div>
                   </button>
                 </div>
@@ -364,7 +389,7 @@ const SchoolDashboardPage = () => {
           {dashboardStatus === 'active' && activeTab === 'applications' && (
             <div className="max-w-[1200px] mx-auto space-y-6 pt-4 animate-fade-in-up">
               <h2 className="text-2xl font-extrabold text-slate-900 mb-4">Student Applications</h2>
-              <DataTable columns={appColumns} data={mockApplications} searchPlaceholder="Search applications by ID or Student Name..." />
+              <DataTable columns={appColumns} data={myApplications} searchPlaceholder="Search applications by ID or Student Name..." />
             </div>
           )}
 
@@ -398,7 +423,7 @@ const SchoolDashboardPage = () => {
                 { header: "Amount", accessor: "amount", render: (row) => `₦${row.amount.toLocaleString()}` },
                 { header: "Status", accessor: "status", render: (row) => <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700">{row.status.toUpperCase()}</span> },
                 { header: "Date", accessor: "date" },
-              ]} data={mockDisbursements} searchPlaceholder="Search disbursements..." />
+              ]} data={myDisbursements} searchPlaceholder="Search disbursements..." />
             </div>
           )}
 

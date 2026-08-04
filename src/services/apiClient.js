@@ -29,13 +29,14 @@ apiClient.interceptors.response.use(
   },
   async function (error) {
     const originalRequest = error.config;
+    
+    // Don't intercept 401s for login requests
+    if (originalRequest.url.includes('/auth/login')) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      // Implement token refresh logic here if needed
-      // const access_token = await refreshAccessToken();
-      // axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
-      // return apiClient(originalRequest);
-      
       localStorage.removeItem('token');
       window.location.href = '/auth';
     }

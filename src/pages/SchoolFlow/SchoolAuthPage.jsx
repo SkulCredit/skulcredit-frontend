@@ -9,9 +9,52 @@ const SchoolAuthPage = () => {
   const [email, setEmail] = useState('school@test.com');
   const [password, setPassword] = useState('school123');
   const [error, setError] = useState('');
+  const [regError, setRegError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [regData, setRegData] = useState({ schoolName: '', contactPerson: '', phoneNumber: '', email: '', address: '', website: '', population: '', password: '', confirmPassword: '' });
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, register } = useAuth();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    try {
+      await login(email, password, 'school');
+      navigate('/school/onboarding');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Invalid school credentials.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setRegError('');
+    setIsLoading(true);
+    if (regData.password !== regData.confirmPassword) {
+      setIsLoading(false);
+      return setRegError("Passwords do not match.");
+    }
+    try {
+      await register({
+        email: regData.email,
+        password: regData.password,
+        phoneNumber: regData.phoneNumber,
+        schoolName: regData.schoolName,
+        contactPerson: regData.contactPerson,
+        role: 'school'
+      }, 'school');
+      navigate('/school/dashboard?status=pending');
+    } catch (err) {
+      setRegError(err.response?.data?.message || 'Failed to register. Try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (window.lucide && window.lucide.createIcons) {
@@ -45,19 +88,7 @@ const SchoolAuthPage = () => {
                 <p className="text-sm text-slate-500 font-medium">Log in to manage your students and disbursements.</p>
             </div>
 
-            <form className="space-y-5" onSubmit={async (e) => {
-                e.preventDefault();
-                setError('');
-                setIsLoading(true);
-                try {
-                  await login(email, password, 'school');
-                  navigate('/school/onboarding');
-                } catch (err) {
-                  setError('Invalid school credentials. Try school@test.com / school123');
-                } finally {
-                  setIsLoading(false);
-                }
-            }}>
+            <form className="space-y-5" onSubmit={handleLogin}>
                 {error && <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl font-medium">{error}</div>}
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">School Admin Email*</label>
@@ -68,10 +99,10 @@ const SchoolAuthPage = () => {
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Password*</label>
                     <div className="relative">
-                        <input type="password" placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)}
+                        <input type={showPassword ? "text" : "password"} placeholder="Enter your password" required value={password} onChange={(e) => setPassword(e.target.value)}
                             className="w-full px-4 py-3.5 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400 pr-12 password-input" />
-                        <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand transition-colors" onClick={() => {}}>
-                            <Icon name="eye-off" className="w-5 h-5" />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand transition-colors">
+                            <Icon name={showPassword ? "eye" : "eye-off"} className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
@@ -114,47 +145,48 @@ const SchoolAuthPage = () => {
                 <p className="text-sm text-slate-500 font-medium">Join our network to receive fast tuition payments.</p>
             </div>
 
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); navigate('/school/dashboard?status=pending'); }}>
+            <form className="space-y-4" onSubmit={handleRegister}>
+                {regError && <div className="p-3 bg-red-50 text-red-600 text-sm rounded-xl font-medium">{regError}</div>}
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">School Name*</label>
-                    <input type="text" placeholder="Official Institution Name" required
+                    <input type="text" placeholder="Official Institution Name" required value={regData.schoolName} onChange={(e) => setRegData({...regData, schoolName: e.target.value})}
                         className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="group">
                         <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Contact Person*</label>
-                        <input type="text" placeholder="Full Name" required
+                        <input type="text" placeholder="Full Name" required value={regData.contactPerson} onChange={(e) => setRegData({...regData, contactPerson: e.target.value})}
                             className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                     </div>
                     <div className="group">
                         <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Phone Number*</label>
-                        <input type="tel" placeholder="+234..." required
+                        <input type="tel" placeholder="+234..." required value={regData.phoneNumber} onChange={(e) => setRegData({...regData, phoneNumber: e.target.value})}
                             className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                     </div>
                 </div>
 
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Official Email Address*</label>
-                    <input type="email" placeholder="admin@school.edu.ng" required
+                    <input type="email" placeholder="admin@school.edu.ng" required value={regData.email} onChange={(e) => setRegData({...regData, email: e.target.value})}
                         className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                 </div>
 
                 <div className="group">
                     <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">School Address*</label>
-                    <textarea rows="2" placeholder="Full physical address" required
+                    <textarea rows="2" placeholder="Full physical address" required value={regData.address} onChange={(e) => setRegData({...regData, address: e.target.value})}
                         className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400 resize-none"></textarea>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="group">
                         <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Website / Social Media*</label>
-                        <input type="text" placeholder="https:// or @handle" required
+                        <input type="text" placeholder="https:// or @handle" required value={regData.website} onChange={(e) => setRegData({...regData, website: e.target.value})}
                             className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                     </div>
                     <div className="group">
                         <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">School Population*</label>
-                        <input type="number" placeholder="Estimated students" required min="10"
+                        <input type="number" placeholder="Estimated students" required min="10" value={regData.population} onChange={(e) => setRegData({...regData, population: e.target.value})}
                             className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400" />
                     </div>
                 </div>
@@ -174,20 +206,20 @@ const SchoolAuthPage = () => {
                     <div className="group">
                         <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Password*</label>
                         <div className="relative">
-                            <input type="password" placeholder="Min 8 chars" required
+                            <input type={showPassword ? "text" : "password"} placeholder="Min 8 chars" required value={regData.password} onChange={(e) => setRegData({...regData, password: e.target.value})}
                                 className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400 pr-10 password-input" />
-                            <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand transition-colors" onClick={() => {}}>
-                                <Icon name="eye-off" className="w-4 h-4" />
+                            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand transition-colors">
+                                <Icon name={showPassword ? "eye" : "eye-off"} className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
                     <div className="group">
                         <label className="block text-sm font-bold text-slate-700 mb-1.5 group-focus-within:text-brand transition-colors">Confirm*</label>
                         <div className="relative">
-                            <input type="password" placeholder="Re-enter" required
+                            <input type={showConfirmPassword ? "text" : "password"} placeholder="Re-enter" required value={regData.confirmPassword} onChange={(e) => setRegData({...regData, confirmPassword: e.target.value})}
                                 className="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-brand focus:ring-4 focus:ring-brand/10 outline-none transition-all duration-300 text-sm text-slate-800 placeholder-slate-400 pr-10 password-input" />
-                            <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand transition-colors" onClick={() => {}}>
-                                <Icon name="eye-off" className="w-4 h-4" />
+                            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand transition-colors">
+                                <Icon name={showConfirmPassword ? "eye" : "eye-off"} className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
@@ -198,9 +230,9 @@ const SchoolAuthPage = () => {
                     <a href="#" className="font-bold text-brand hover:underline ml-1">Terms of Service</a>
                 </div>
 
-                <button type="submit" className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] flex items-center justify-center gap-2 group">
-                    <span>Submit Application</span>
-                    <Icon name="arrow-right" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <button type="submit" disabled={isLoading} className="relative w-full bg-brand text-white font-bold py-4 rounded-2xl hover:bg-brand-hover hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 shadow-[0_10px_20px_-10px_rgba(136,19,55,0.5)] flex items-center justify-center gap-2 group disabled:opacity-70">
+                    <span>{isLoading ? 'Submitting...' : 'Submit Application'}</span>
+                    {!isLoading && <Icon name="arrow-right" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                 </button>
 
                 <p className="text-center text-sm text-slate-500 font-medium mt-6">
